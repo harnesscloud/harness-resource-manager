@@ -2,13 +2,14 @@
 
 from flask import Flask
 from flask.ext.classy import FlaskView, route
-import managers_view, resources_view, reservations_view
+import managers_view, resources_view, reservations_view, metrics_view
 import sys
 
 class HarnessResourceManager:
    def __init__(self, views=[managers_view.ManagersView,  \
                             resources_view.ResourcesView, \
-                            reservations_view.ReservationsView]):
+                            reservations_view.ReservationsView, \
+                            metrics_view.MetricsView]):
       self.app = Flask(__name__)
       self.views = views
             

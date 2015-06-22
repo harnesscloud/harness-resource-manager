@@ -23,7 +23,7 @@ class TestApiResourcesView(unittest.TestCase):
         assert "error" in outdata and "implemented" in outdata["error"]["message"]          
         
     # should fail getResources
-    def test2(self):
+    def test3(self):
         app = self.create_app()
         outdata = json.loads(app.get('/getResources').data)             
         assert "error" in outdata and "implemented" in outdata["error"]["message"]            
