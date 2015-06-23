@@ -2,6 +2,7 @@ from flask import request
 import json
 import traceback
 import sys
+import requests
 
 
 def json_request():
@@ -25,3 +26,7 @@ def json_error(error, error_id=-1):
 
 
    return json.dumps({"error": { "message": traceback_details["message"], "code": traceback_details["type"], "function":traceback_details["name"], "filename": traceback_details["filename"], "lineno":  traceback_details["lineno"] }})  
+   
+def post(data, method, port=56789, path='localhost'):
+   r=requests.post('http://'+path+':'+str(port) + '/' + method, data, headers={'content-type': 'application/json'})
+   return r.json()   

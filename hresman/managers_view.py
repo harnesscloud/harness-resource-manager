@@ -16,7 +16,7 @@ class ManagersView(FlaskView):
     
     @staticmethod
     def gen_key(name, addr, port):
-       return name + ':' + addr + ':' + port
+       return name + ':' + addr + ':' + str(port)
     
     ###############################################  register manager ##############        
     @route('/registerManager', methods=["POST"])
@@ -24,8 +24,12 @@ class ManagersView(FlaskView):
     def register_manager(self):
         try:
            in_data = json_request()
-        
-           addr = in_data['Address']
+           
+           if 'Address' in in_data:               
+              addr = in_data['Address']
+           else:
+              addr = request.remote_addr
+              
            port = in_data['Port']
            name = in_data['Name']
            

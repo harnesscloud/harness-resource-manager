@@ -9,10 +9,6 @@ class ResourcesView(FlaskView):
     base = 'resources'
     version='v3'    
     route_base='/'
-    
-    resources = {}
-    
-    #resources = { "ID1":{ "Type":"Machine", "Attributes":{ "Cores": 8 } }, "ID2":{ "Type":"Machine", "Attributes":{ "Cores": 8 } } }
         
     ###############################################  get all resources ############## 
     def get_resources(self):
@@ -22,7 +18,7 @@ class ResourcesView(FlaskView):
     @route(version + '/' + base, methods=["GET"])   
     def get_resources__(self):
         try:
-           return self.get_resources()   
+           return json_reply(self.get_resources())   
         except Exception as e:           
            return json_error(e) 
 
@@ -35,7 +31,7 @@ class ResourcesView(FlaskView):
     @route(version + '/' + base + "/alloc-spec", methods=["GET"])   
     def get_alloc_spec__(self):
         try:
-           return self.get_alloc_spec()
+           return json_reply(self.get_alloc_spec())
         except Exception as e:           
            return json_error(e)   
            
@@ -68,7 +64,8 @@ class ResourcesView(FlaskView):
            
            if allocation is None and release is None:
               raise Exception("missing Allocation or Release fields!")
-           self.compute_capacity(resource, allocation, release)
+           
+           return json_reply(self.compute_capacity(resource, allocation, release))
                         
         except Exception as e:           
            return json_error(e)   
