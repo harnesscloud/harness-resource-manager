@@ -5,11 +5,17 @@ from flask.ext.classy import FlaskView, route
 import managers_view, resources_view, reservations_view, metrics_view
 import sys
 
+default_views=[managers_view.ManagersView,  \
+               resources_view.ResourcesView, \
+               reservations_view.ReservationsView, \
+               metrics_view.MetricsView]
+               
+leaf_views=[resources_view.ResourcesView, \
+            reservations_view.ReservationsView, \
+            metrics_view.MetricsView]                            
+
 class HarnessResourceManager:
-   def __init__(self, views=[managers_view.ManagersView,  \
-                            resources_view.ResourcesView, \
-                            reservations_view.ReservationsView, \
-                            metrics_view.MetricsView]):
+   def __init__(self, views=default_views):
       self.app = Flask(__name__)
       self.views = views
             
