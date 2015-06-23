@@ -11,16 +11,20 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-docker run --rm -v $DIR:/test -t ubuntu:14.04 /bin/bash -c "cd /test && /test/run_tests.sh"
+docker run --rm -v $DIR:/test -ti -w "/test" ubuntu:14.04 /bin/bash -c './run_tests.sh;/bin/bash'
+echo -------------------------------------[exiting container]----
 exit 
 fi
  
-
 ########## code to start testing  
+if [ ! -f /tmp/runtests ]; then
 apt-get update
 apt-get -y install curl python
 curl -s https://bootstrap.pypa.io/get-pip.py | python -
 pip install -r requirements.txt
 pip install coverage pytest
+touch /tmp/runtests
+fi
+
 python setup.py test
 
