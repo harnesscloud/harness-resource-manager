@@ -6,7 +6,9 @@ import utils
 import json
 from random import randint
 
-import manager, managers_view, resources_view, reservations_view, metrics_view
+import managers_view, resources_view, reservations_view, metrics_view
+
+from manager import HarnessResourceManager
 
 ###################################################################### options
 parser = OptionParser()
@@ -57,7 +59,7 @@ irm_dummy_views=[ResourcesView, \
                  reservations_view.ReservationsView, \
                  metrics_view.MetricsView]
 
-class IRMDummy(manager.HarnessResourceManager):
+class IRMDummy(HarnessResourceManager):
     pass
     
 if __name__ == "__main__":    

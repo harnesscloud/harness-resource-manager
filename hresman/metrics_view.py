@@ -11,38 +11,34 @@ class MetricsView(FlaskView):
     route_base='/'
     
     ###############################################  create reservation ############ 
-    def get_metrics(self, address, entry):       
+    def _get_metrics(self, reservID, address, entry):       
        raise Exception("get metrics method has not been implemented!")
+    
            
     @route('/getMetrics', methods=["POST"])         
-    def get_metrics_post__(self):
+    def get_metrics_post(self):
        try:
-           in_data = json_request()
-        
-           addrs = in_data['Address']
-           entries = in_data['Entry']
-           
-           if not isinstance(addrs,list):
-              raise Exception("Address field is not an array!")
-
-           if not isinstance(entries, list):
-              raise Exception("Entry field is not an array!")
-
-           if len(addrs) <> len(entries):
-              raise Exception("Address and Entry fields must have the same size!")
- 
-           if len(addrs) == 0:
-              raise Exception("Address field cannot be empty!")
-              
-           return json_reply(map(self.get_metrics, addrs, entries)) 
+          in_data = json_request()
+          
+          reservID = in_data['ReservationID']           
+          addr = in_data['Address']
+          if 'Entry' not in in_data:
+             entry = 0
+          else:
+             entry = in_data['Entry']
+            
+          return json_reply(self._get_metrics(reservID, addr, entry)) 
                             
        except Exception as e:           
           return json_error(e)
           
 
     @route(version + '/' + base, methods=["GET"])         
-    def get_metrics__(self):
+    def get_metrics_get(self):
        try:
+          reservID=request.args.get('id')
+          if reservID is None:
+             raise Exception("no id specified!")          
           addr=request.args.get('addr')
           if addr is None:
              raise Exception("no address specified!")
@@ -50,7 +46,7 @@ class MetricsView(FlaskView):
           if entry is None:
              entry = 0  
           entry_int = int(entry)         
-          return json_reply(self.get_metrics(addr, entry_int))    
+          return json_reply(self._get_metrics(reservID, addr, entry_int))    
                
        except Exception as e:           
           return json_error(e)

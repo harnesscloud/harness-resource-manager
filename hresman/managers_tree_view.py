@@ -7,6 +7,7 @@ import json
 import uuid
 from managers_view import ManagersView
 
+
 class ManagersTreeView(ManagersView): 
     managers = {} # idx -> item
     managers_idx = {} # key -> idx  
@@ -15,7 +16,10 @@ class ManagersTreeView(ManagersView):
     def gen_key(name, addr, port):
        return name + ':' + addr + ':' + str(port)
     
-    ###############################################  register manager ##############        
+    ###############################################  register manager ##############
+    def _registerManager(self, data):
+        pass
+            
     @route('/registerManager', methods=["POST"])
     @route(ManagersView.version + '/' + ManagersView.base, methods=["POST"])      
     def register_manager(self):
@@ -41,8 +45,11 @@ class ManagersTreeView(ManagersView):
            else:
               idx = uuid.uuid1()
               ManagersTreeView.managers_idx[key] = idx
-                   
-           ManagersTreeView.managers[idx] = { 'Address': addr, 'Port': port, 'Name': name, 'ManagerID': str(idx) } 
+           
+           data = { 'Address': addr, 'Port': port, 'Name': name, 'ManagerID': str(idx) }          
+           ManagersTreeView.managers[idx] = data
+           
+           self._registerManager(data)
            
            return json_reply(ManagersTreeView.managers[idx])    
                

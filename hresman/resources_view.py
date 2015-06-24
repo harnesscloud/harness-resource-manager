@@ -11,37 +11,37 @@ class ResourcesView(FlaskView):
     route_base='/'
         
     ###############################################  get all resources ############## 
-    def get_resources(self):
+    def _get_resources(self):
        raise Exception("GET resources method has not been implemented!") 
        
     @route('/getResources', methods=["GET"])
     @route(version + '/' + base, methods=["GET"])   
-    def get_resources__(self):
+    def get_resources(self):
         try:
-           return json_reply(self.get_resources())   
+           return json_reply(self._get_resources())   
         except Exception as e:           
            return json_error(e) 
 
     ################################  get allocation specification ##############  
-    def get_alloc_spec(self):
+    def _get_alloc_spec(self):
        raise Exception("GET allocation specification method has not been implemented!")
     
      
     @route('/getAllocSpec', methods=["GET"])
     @route(version + '/' + base + "/alloc-spec", methods=["GET"])   
-    def get_alloc_spec__(self):
+    def get_alloc_spec(self):
         try:
-           return json_reply(self.get_alloc_spec())
+           return json_reply(self._get_alloc_spec())
         except Exception as e:           
            return json_error(e)   
            
     ################################  compute capacity ##############  
-    def compute_capacity(self, resource, allocation, release):
+    def _compute_capacity(self, resource, allocation, release):
        raise Exception("compute capacity method has not been implemented!")
       
     @route('/computeCapacity', methods=["POST"])
     @route(version + '/' + base + "/capacity", methods=["POST"])   
-    def compute_capacity__(self):
+    def compute_capacity(self):
         try:
            in_data = json_request()
            resource = in_data["Resource"]
@@ -65,7 +65,7 @@ class ResourcesView(FlaskView):
            if allocation is None and release is None:
               raise Exception("missing Allocation or Release fields!")
            
-           return json_reply(self.compute_capacity(resource, allocation, release))
+           return json_reply(self._compute_capacity(resource, allocation, release))
                         
         except Exception as e:           
            return json_error(e)   

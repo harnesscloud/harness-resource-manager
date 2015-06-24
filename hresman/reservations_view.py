@@ -12,12 +12,12 @@ class ReservationsView(FlaskView):
     reservations = {}
     
     ###############################################  create reservation ############ 
-    def create_reservation(self, allocation, constraints, monitor):
+    def _create_reservation(self, allocation, constraints, monitor):
        raise Exception("create reservation method has not been implemented!")
        
     @route('/createReservation', methods=["POST"])
     @route(version + '/' + base + "/create", methods=["POST"])     
-    def create_reservation__(self):
+    def create_reservation(self):
         try:
            in_data = json_request()
            allocation = in_data["Allocation"]
@@ -39,17 +39,17 @@ class ReservationsView(FlaskView):
            else:
               monitor = None 
 
-           self.create_reservation(allocation, constraints, monitor)
+           self._create_reservation(allocation, constraints, monitor)
         except Exception as e:           
            return json_error(e)               
     
     ###############################################  check reservation ############   
-    def check_reservation(self, reservations):
+    def _check_reservation(self, reservations):
        raise Exception("check reservation method has not been implemented!")
        
     @route('/checkReservation', methods=["POST"])
     @route(version + '/' + base + "/check", methods=["POST"])     
-    def check_reservation__(self):
+    def check_reservation(self):
         try:
            in_data = json_request()
            reservations = in_data["ReservationID"]
@@ -60,18 +60,18 @@ class ReservationsView(FlaskView):
            if len(reservations) == 0:
                raise Exception("ReservationID field cannot be empty!")          
 
-           self.check_reservation(reservations)
+           self._check_reservation(reservations)
         except Exception as e:           
            return json_error(e)    
            
            
     ###############################################  release reservation ############   
-    def release_reservation(self, reservations):
+    def _release_reservation(self, reservations):
        raise Exception("release reservation method has not been implemented!")
        
     @route('/releaseReservation', methods=["DELETE"])
     @route(version + '/' + base + "/release", methods=["DELETE"])     
-    def release_reservation__(self):
+    def release_reservation(self):
         try:
            in_data = json_request()
            reservations = in_data["ReservationID"]
@@ -82,19 +82,19 @@ class ReservationsView(FlaskView):
            if len(reservations) == 0:
                raise Exception("ReservationID field cannot be empty!")          
 
-           self.release_reservation(reservations)
+           self._release_reservation(reservations)
         except Exception as e:           
            return json_error(e)             
                       
     ###############################################  release all reservations ############   
-    def release_all_reservations(self):
-       resources = {}
+    def _release_all_reservations(self):
+       ReservationsView.reservations={}
        
     @route('/releaseAllReservations', methods=["DELETE"])
     @route(version + '/' + base + "/release-all", methods=["DELETE"])     
-    def release_all_reservations__(self):
+    def release_all_reservations(self):
         try:
-           self.release_all_reservations()
+           self._release_all_reservations()
         except Exception as e:           
            return json_error(e)             
                             
