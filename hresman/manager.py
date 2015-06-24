@@ -17,7 +17,7 @@ default_views_tree=[managers_tree_view.ManagersTreeView,  \
                metrics_view.MetricsView]
                
 class HarnessResourceManager:
-   def __init__(self, views=default_views):
+   def __init__(self, views):
       self.app = Flask(__name__, template_folder=os.path.dirname(os.path.realpath(__name__))+'/templates')
       self.views = views
             
@@ -38,6 +38,6 @@ class HarnessResourceManager:
       
 
 if __name__ == '__main__':
-   mgr = HarnessResourceManager() 
+   mgr = HarnessResourceManager(default_views_tree) 
    mgr.run(56781)
 

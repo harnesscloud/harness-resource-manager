@@ -55,12 +55,12 @@ class TestApiManagersView(unittest.TestCase):
         outdata4 = json.loads(app.get('/v3/managers').data)
         assert "result" in outdata4 and len(outdata4["result"]) == 0         
  
-    # we should have an error if we don't specify all fields when registering the manager
+    # should issue an error if we don't specify either Port or Name fields when registering the manager
     def test5(self):
         app = self.create_app()
-        assert "error" in self.register_manager(app, '/registerManager', {'Address': '192.168.1.1', 'Name': 'IRM-DUMMY'}) 
-        assert "error" in self.register_manager(app, '/registerManager', {'Address': '192.168.1.1', 'Port': '123'})             
-        assert "error" in self.register_manager(app, '/registerManager', {'Port': '123', 'Name': 'IRM-DUMMY'})                      
+        assert "error" in self.register_manager(app, '/registerManager', { 'Name': 'IRM-DUMMY'}) 
+        assert "error" in self.register_manager(app, '/registerManager', { 'Port': 123})             
+        assert not "error" in self.register_manager(app, '/registerManager', {'Port': 123, 'Name': 'IRM-DUMMY'})                      
         assert "error" in self.register_manager(app, '/registerManager', {})                         
         
                  

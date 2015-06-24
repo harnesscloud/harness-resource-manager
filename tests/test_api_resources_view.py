@@ -1,11 +1,11 @@
 from flask import json
 import unittest
-from hresman.manager import HarnessResourceManager
+from hresman.manager import HarnessResourceManager,default_views
 
 class TestApiResourcesView(unittest.TestCase):
   
     def create_app(self):
-        app = HarnessResourceManager().app 
+        app = HarnessResourceManager(default_views).app 
         app.config['TESTING'] = True
         return app.test_client()   
                

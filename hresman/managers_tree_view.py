@@ -26,6 +26,10 @@ class ManagersTreeView(ManagersView):
               addr = in_data['Address']
            else:
               addr = request.remote_addr
+           
+           # when testing (no requests), addr is None. We assume localhost   
+           if addr is None:
+              addr = "127.0.0.1"
               
            port = in_data['Port']
            name = in_data['Name']
