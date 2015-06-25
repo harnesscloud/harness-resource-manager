@@ -15,11 +15,11 @@ class ManagersTreeView(ManagersView):
     @staticmethod
     def gen_key(name, addr, port):
        return name + ':' + addr + ':' + str(port)
-    
+   
     ###############################################  register manager ##############
     def _registerManager(self, data):
         pass
-            
+        
     @route('/registerManager', methods=["POST"])
     @route(ManagersView.version + '/' + ManagersView.base, methods=["POST"])      
     def register_manager(self):
@@ -43,10 +43,10 @@ class ManagersTreeView(ManagersView):
            if key in ManagersTreeView.managers_idx:
               idx = ManagersTreeView.managers_idx[key]
            else:
-              idx = uuid.uuid1()
+              idx = str(uuid.uuid1())
               ManagersTreeView.managers_idx[key] = idx
            
-           data = { 'Address': addr, 'Port': port, 'Name': name, 'ManagerID': str(idx) }          
+           data = { 'Address': addr, 'Port': port, 'Name': name, 'ManagerID': idx }          
            ManagersTreeView.managers[idx] = data
            
            self._registerManager(data)
@@ -74,9 +74,8 @@ class ManagersTreeView(ManagersView):
     @route(ManagersView.version + '/' + ManagersView.base + '/<id>', methods=["GET"])   
     def get_manager(self, id):
         try:
-           i = uuid.UUID(id)
-           if i in  ManagersTreeView.managers:
-              return json_reply(ManagersTreeView.managers[i]) 
+           if id in  ManagersTreeView.managers:
+              return json_reply(ManagersTreeView.managers[id]) 
            
            raise Exception("invalid manager id: " + id)
                
@@ -94,15 +93,14 @@ class ManagersTreeView(ManagersView):
         except Exception as e:           
            return json_error(e)      
             
-   ###############################################  delete manager X ##############      
-    @route(ManagersView.version + '/' + ManagersView.base + '/<id>', methods=["DELETE"])   
+   ###############################################  delete manager X ##############     
+    @route(ManagersView.version + '/' + ManagersView.base + '/<id>', methods=["DELETE"]) 
     def delete_manager(self, id):
         try:
-           i = uuid.UUID(id)
-           if i in  ManagersTreeView.managers:
-              item = ManagersTreeView.managers[i]
+           if id in  ManagersTreeView.managers:
+              item = ManagersTreeView.managers[id]
               key = ManagersTreeView.gen_key(item['Name'], item['Address'], item['Port'])
-              ManagersTreeView.managers.pop(i)
+              ManagersTreeView.managers.pop(id)
               ManagersTreeView.managers_idx.pop(key)
               return json_reply({}) 
            

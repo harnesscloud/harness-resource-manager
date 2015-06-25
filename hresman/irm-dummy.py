@@ -38,7 +38,7 @@ parser.add_option("-M", "--maxvalue", dest="MAXVAL", default=10,
 
 ######################################################### Resource View ####
 class ResourcesView(resources_view.ResourcesView):
-   def get_resources(self):
+   def _get_resources(self):
        resources = {}
        for i in range(0, options.NRESOURCES):
           fields = {}
@@ -47,7 +47,7 @@ class ResourcesView(resources_view.ResourcesView):
           resources["ID"+str(i+1)] = { "Type":  options.TYPE, "Attributes": fields}
        return resources           
        
-   def get_alloc_spec(self):
+   def _get_alloc_spec(self):
        spec = {"Types": {options.TYPE:{}}}
        
        for j in range(0, options.NFIELDS):
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 		    "Name":options.NAME\
 		    })  
     
-    out=utils.post(data, 'registerManager') 
+    out=utils.post(data, 'registerManager', 56789) 
     if not isinstance(out, dict) or "result" not in out:
        print "Error: " + str(out) 
        exit(-1)
