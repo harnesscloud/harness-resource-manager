@@ -45,7 +45,7 @@ class ResourcesView(FlaskView):
         try:
            in_data = json_request()
            resource = in_data["Resource"]
-           if not isinstance(resource,dict):
+           if not isinstance(resource, dict):
               raise Exception("Resource field is not an object!")
            
            if "Allocation" in in_data:
