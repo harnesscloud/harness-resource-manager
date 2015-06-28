@@ -70,7 +70,7 @@ class ReservationsView(FlaskView):
        raise Exception("release reservation method has not been implemented!")
        
     @route('/releaseReservation', methods=["DELETE"])
-    @route(version + '/' + base + "/release", methods=["DELETE"])     
+    @route(version + '/' + base, methods=["DELETE"])     
     def release_reservation(self):
         try:
            in_data = json_request()
@@ -92,7 +92,7 @@ class ReservationsView(FlaskView):
        return {}
        
     @route('/releaseAllReservations', methods=["DELETE"])
-    @route(version + '/' + base + "/release-all", methods=["DELETE"])     
+    @route(version + '/' + base + "/all", methods=["DELETE"])     
     def release_all_reservations(self):
         try:
            return json_reply(self._release_all_reservations())
