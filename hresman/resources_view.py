@@ -2,13 +2,17 @@
 
 from flask.ext.classy import FlaskView, route
 from flask import request
-from utils import json_request, json_reply, json_error
+from utils import json_request, json_reply, json_error, get
+from managers_tree_view import ManagersTreeView
+import copy
 import json
 
 class ResourcesView(FlaskView):
     base = 'resources'
     version='v3'    
     route_base='/'
+    
+    resources = {}
         
     ###############################################  get all resources ############## 
     def _get_resources(self):
@@ -36,12 +40,12 @@ class ResourcesView(FlaskView):
            return json_error(e)   
            
     ################################  compute capacity ##############  
-    def _compute_capacity(self, resource, allocation, release):
+    def _calculate_capacity(self, resource, allocation, release):
        raise Exception("compute capacity method has not been implemented!")
       
-    @route('/computeCapacity', methods=["POST"])
-    @route(version + '/' + base + "/capacity", methods=["POST"])   
-    def compute_capacity(self):
+    @route('/calculateCapacity', methods=["POST"])
+    @route(version + '/' + base + "/calc-capacity", methods=["POST"])   
+    def calculate_capacity(self):
         try:
            in_data = json_request()
            resource = in_data["Resource"]
@@ -65,9 +69,38 @@ class ResourcesView(FlaskView):
            if allocation is None and release is None:
               raise Exception("missing Allocation or Release fields!")
            
-           return json_reply(self._compute_capacity(resource, allocation, release))
+           return json_reply(self._calculate_capacity(resource, allocation, release))
                         
         except Exception as e:           
            return json_error(e)   
 
+    ################################ request resources from a resource manager ##############
+    @route(version + '/' + base + '/<id>/request', methods=["GET"])
+    def request_resources_id(self, id):
+       try:
+          if not id in ManagersTreeView.managers:
+             raise Exception("cannot find manager: " + id)
+          data = ManagersTreeView.managers[id]
+
+          try:   
+             out = get(ManagersTreeView.version + '/' + "resources", data["Port"], data["Address"])
+             if "result" in out:
+                 ResourcesView.resources[data["ManagerID"]] = out["result"]
+          except Exception as e:
+             ManagersTreeView().delete_manager(data["ManagerID"])
+             return json_error(e)
+          return json_reply({})
+       except Exception as e:          
+          return json_error(e)
+
+    ################################ request resources from all IRMs ############
+    @route(version + '/' + base + '/request', methods=["GET"])
+    def request_resources(self):
+       try:
+          managers = copy.copy(ManagersTreeView.managers)
+          for id in managers:          
+             self.request_resources_id(id)
+          return json_reply({})
+       except Exception as e:
+          return json_error(e)
                   

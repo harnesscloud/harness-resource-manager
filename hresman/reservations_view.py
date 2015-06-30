@@ -4,6 +4,7 @@ from flask.ext.classy import FlaskView, route
 from flask import request
 from utils import json_request, json_reply, json_error
 import json
+from resources_view import ResourcesView
 
 class ReservationsView(FlaskView):
     base = 'reservations'
@@ -30,15 +31,16 @@ class ReservationsView(FlaskView):
               if not isinstance(constraints, list):
                  raise Exception("Constraints field is not an array!")
            else:
-              constraints = None
+              constraints = []
            
            if "Monitor" in in_data:
               monitor = in_data["Monitor"]
               if not isinstance(monitor, dict):
                  raise Exception("Monitor field is not an object!")              
            else:
-              monitor = None 
-
+              monitor = {} 
+           
+           ResourcesView().request_resources()
            return json_reply(self._create_reservation(alloc_req, constraints, monitor))
         except Exception as e:           
            return json_error(e)               

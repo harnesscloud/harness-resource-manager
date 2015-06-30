@@ -66,7 +66,7 @@ class ResourcesView(resources_view.ResourcesView):
        
        return spec
        
-   def _compute_capacity(self, resource, allocation, release):  
+   def _calculate_capacity(self, resource, allocation, release):  
       fields = resource["Attributes"]
       for rel in release:
           for fld in rel["Attributes"]:
@@ -108,7 +108,7 @@ class ReservationsView(reservations_view.ReservationsView):
           id = req["ID"]
           resource = cresources[id]
           req_attrib = {"Attributes":req["Attributes"]}
-          ret = ResourcesView()._compute_capacity(resource, [req_attrib], [])
+          ret = ResourcesView()._calculate_capacity(resource, [req_attrib], [])
           if ret == {}:
              raise Exception("Cannot reserve request!")
           n = n + 1   
@@ -142,7 +142,7 @@ class ReservationsView(reservations_view.ReservationsView):
           for inst in existing_reservations[res]:
              
              resource = cresources[inst["ID"]]
-             ret = ResourcesView()._compute_capacity(resource, [], [inst["alloc"]])
+             ret = ResourcesView()._calculate_capacity(resource, [], [inst["alloc"]])
              if ret == {}:
                 raise Exception("Cannot reserve request!")                   
           
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     mgr = HarnessResourceManager(irm_dummy_views)
  
     
-    out=utils.post({"Port":options.PORT, "Name":options.NAME} , 'registerManager', 56789) 
+    out=utils.post({"Port":options.PORT, "Name":options.NAME} , 'registerManager', 56788) 
     if not isinstance(out, dict) or "result" not in out:
        print "Error: " + str(out) 
        exit(-1)
