@@ -46,7 +46,8 @@ class ManagersTreeView(ManagersView):
               idx = str(uuid.uuid1())
               ManagersTreeView.managers_idx[key] = idx
            
-           data = { 'Address': addr, 'Port': port, 'Name': name, 'ManagerID': idx }          
+           data = { 'Address': addr, 'Port': port, 'Name': name, 'ManagerID': idx }   
+                
            ManagersTreeView.managers[idx] = data
            
            self._registerManager(data)

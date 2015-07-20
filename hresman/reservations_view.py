@@ -20,6 +20,7 @@ class ReservationsView(FlaskView):
     @route(version + '/' + base, methods=["POST"])     
     def create_reservation(self):
         try:
+
            in_data = json_request()
            alloc_req = in_data["Allocation"]
            
@@ -90,9 +91,9 @@ class ReservationsView(FlaskView):
                       
     ###############################################  release all reservations ############   
     def _release_all_reservations(self):
-       ReservationsView.reservations={}
-       return {}
-       
+       reservations = ReservationsView.reservations.keys()
+       return self._release_reservation(reservations)
+              
     @route('/releaseAllReservations', methods=["DELETE"])
     @route(version + '/' + base + "/all", methods=["DELETE"])     
     def release_all_reservations(self):

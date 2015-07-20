@@ -56,7 +56,7 @@ class ResourcesView(resources_view.ResourcesView):
              for j in range(0, options.NFIELDS):
                 fields[chr(97+j)]= random.randint(options.MINVAL, options.MAXVAL)
              resources["ID"+str(i+1)] = { "Type":  options.TYPE, "Attributes": fields}
-       return resources           
+       return { "Resources" : resources }          
        
    def _get_alloc_spec(self):
        spec = {"Types": {options.TYPE:{}}}
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     mgr = HarnessResourceManager(irm_dummy_views)
  
     
-    out=utils.post({"Port":options.PORT, "Name":options.NAME} , 'registerManager', 56788) 
+    out=utils.post({"Port":options.PORT, "Name":options.NAME} , 'registerManager', 56789) 
     if not isinstance(out, dict) or "result" not in out:
        print "Error: " + str(out) 
        exit(-1)

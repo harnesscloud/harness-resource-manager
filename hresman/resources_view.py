@@ -83,9 +83,10 @@ class ResourcesView(FlaskView):
           data = ManagersTreeView.managers[id]
 
           try:   
-             out = get(ManagersTreeView.version + '/' + "resources", data["Port"], data["Address"])
+             out = get("getResources", data["Port"], data["Address"])
+             print ":::::::::::::::::>", str(out)
              if "result" in out:
-                 ResourcesView.resources[data["ManagerID"]] = out["result"]
+                 ResourcesView.resources[data["ManagerID"]] = out["result"]["Resources"]
           except Exception as e:
              ManagersTreeView().delete_manager(data["ManagerID"])
              return json_error(e)
