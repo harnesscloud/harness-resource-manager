@@ -18,7 +18,9 @@ default_views_tree=[managers_tree_view.ManagersTreeView,  \
                
 class HarnessResourceManager:
    def __init__(self, views):
-      self.app = Flask(__name__, template_folder=os.path.dirname(os.path.realpath(__name__))+'/templates')
+      self.app = Flask(__name__, \
+                       template_folder=os.path.dirname(os.path.realpath(__name__))+'/templates', \
+                       static_folder=os.path.dirname(os.path.realpath(__name__))+'/static')
       self.views = views
             
       for v in views:
