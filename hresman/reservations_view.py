@@ -20,7 +20,6 @@ class ReservationsView(FlaskView):
     @route(version + '/' + base, methods=["POST"])     
     def create_reservation(self):
         try:
-
            in_data = json_request()
            alloc_req = in_data["Allocation"]
            

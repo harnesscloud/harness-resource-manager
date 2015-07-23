@@ -84,7 +84,7 @@ class ResourcesView(FlaskView):
 
           try:   
              out = get("getResources", data["Port"], data["Address"])
-             print ":::::::::::::::::>", str(out)
+
              if "result" in out:
                  ResourcesView.resources[data["ManagerID"]] = out["result"]["Resources"]
           except Exception as e:

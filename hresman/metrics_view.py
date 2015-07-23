@@ -20,8 +20,11 @@ class MetricsView(FlaskView):
        try:
           in_data = json_request()
           
-          reservID = in_data['ReservationID']           
-          addr = in_data['Address']
+          reservID = in_data['ReservationID']    
+          if "Address" not in in_data:
+             addr = ""
+          else:       
+             addr = in_data['Address']
           if 'Entry' not in in_data:
              entry = 0
           else:
@@ -41,7 +44,7 @@ class MetricsView(FlaskView):
              raise Exception("no id specified!")          
           addr=request.args.get('addr')
           if addr is None:
-             raise Exception("no address specified!")
+             addr = ""
           entry=request.args.get('entry')
           if entry is None:
              entry = 0  
