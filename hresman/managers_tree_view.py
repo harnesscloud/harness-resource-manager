@@ -19,12 +19,14 @@ class ManagersTreeView(ManagersView):
     ###############################################  register manager ##############
     def _registerManager(self, data):
         pass
-        
+    
+    @route('/addManager', methods=["POST"])    
     @route('/registerManager', methods=["POST"])
     @route(ManagersView.version + '/' + ManagersView.base, methods=["POST"])      
     def register_manager(self):
         try:
            in_data = json_request()
+           print ":::>", in_data
            
            if 'Address' in in_data:               
               addr = in_data['Address']

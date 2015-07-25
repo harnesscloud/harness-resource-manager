@@ -159,7 +159,7 @@ if __name__ == "__main__":
     mgr = HarnessResourceManager(irm_dummy_views)
  
     
-    out=utils.post({"Port":options.PORT, "Name":options.NAME} , 'registerManager', 56789) 
+    out=utils.post({"Port":options.PORT, "Name":options.NAME} , 'registerManager', 56788) 
     if not isinstance(out, dict) or "result" not in out:
        print "Error: " + str(out) 
        exit(-1)
