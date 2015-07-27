@@ -20,7 +20,6 @@ class ManagersTreeView(ManagersView):
     def _registerManager(self, data):
         pass
     
-    @route('/addManager', methods=["POST"])    
     @route('/registerManager', methods=["POST"])
     @route(ManagersView.version + '/' + ManagersView.base, methods=["POST"])      
     def register_manager(self):
