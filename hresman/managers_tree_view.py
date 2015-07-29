@@ -6,11 +6,19 @@ from utils import json_request, json_reply, json_error
 import json
 import uuid
 from managers_view import ManagersView
+import sqlite3
 
+############ initialise database for managers ######
+conn = sqlite3.connect('crs.db')
+c = conn.cursor()
+c.execute('''CREATE TABLE IF NOT EXISTS managers
+             (key text unique, uuid text)''')
+conn.commit()
+conn.close()
+###################################################
 
 class ManagersTreeView(ManagersView): 
     managers = {} # idx -> item
-    managers_idx = {} # key -> idx  
     
     @staticmethod
     def gen_key(name, addr, port):
@@ -19,7 +27,7 @@ class ManagersTreeView(ManagersView):
     ###############################################  register manager ##############
     def _registerManager(self, data):
         pass
-    
+   
     @route('/registerManager', methods=["POST"])
     @route(ManagersView.version + '/' + ManagersView.base, methods=["POST"])      
     def register_manager(self):
@@ -38,14 +46,22 @@ class ManagersTreeView(ManagersView):
               
            port = in_data['Port']
            name = in_data['Name']
+                      
+           key = ManagersTreeView.gen_key(name, addr, port)           
            
-           key = ManagersTreeView.gen_key(name, addr, port)
-           
-           if key in ManagersTreeView.managers_idx:
-              idx = ManagersTreeView.managers_idx[key]
-           else:
+           ################### check the database ####
+           conn = sqlite3.connect('crs.db')
+           c = conn.cursor()
+           c.execute("SELECT * from managers where key = '%s'" % key)
+           r = c.fetchone()
+
+           if r == None:
               idx = str(uuid.uuid1())
-              ManagersTreeView.managers_idx[key] = idx
+              c.execute("INSERT INTO managers VALUES  ('%s', '%s')" % (key, idx))
+              conn.commit()
+           else:
+              idx = r[1]            
+           conn.close()             
            
            data = { 'Address': addr, 'Port': port, 'Name': name, 'ManagerID': idx }   
                 
@@ -87,8 +103,7 @@ class ManagersTreeView(ManagersView):
     @route(ManagersView.version + '/' + ManagersView.base, methods=["DELETE"])   
     def delete_managers(self):
         try:
-           ManagersTreeView.managers = {} 
-           ManagersTreeView.managers_idx = {}   
+           ManagersTreeView.managers = {}   
               
            return json_reply({})    
                
@@ -103,7 +118,6 @@ class ManagersTreeView(ManagersView):
               item = ManagersTreeView.managers[id]
               key = ManagersTreeView.gen_key(item['Name'], item['Address'], item['Port'])
               ManagersTreeView.managers.pop(id)
-              ManagersTreeView.managers_idx.pop(key)
               return json_reply({}) 
            
            raise Exception("invalid manager index: " + id)
