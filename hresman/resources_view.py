@@ -13,6 +13,8 @@ class ResourcesView(FlaskView):
     route_base='/'
     
     resources = {}
+    
+    resource_constraints = {}
         
     ###############################################  get all resources ############## 
     def _get_resources(self):
@@ -84,9 +86,10 @@ class ResourcesView(FlaskView):
 
           try:   
              out = get("getResources", data["Port"], data["Address"])
-
              if "result" in out:
                  ResourcesView.resources[data["ManagerID"]] = out["result"]["Resources"]
+                 if "Constraints" in out["result"]:
+                    ResourcesView.resource_constraints[data["ManagerID"]] = out["result"]["Constraints"]
           except Exception as e:
              ManagersTreeView().delete_manager(data["ManagerID"])
              return json_error(e)

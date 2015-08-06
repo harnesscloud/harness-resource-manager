@@ -13,7 +13,7 @@ class ReservationsView(FlaskView):
     reservations = {}
     
     ###############################################  create reservation ############ 
-    def _create_reservation(self, alloc_req, constraints, monitor):
+    def _create_reservation(self, scheduler, alloc_req, constraints, monitor):
        raise Exception("create reservation method has not been implemented!")
        
     @route('/createReservation', methods=["POST"])
@@ -39,9 +39,14 @@ class ReservationsView(FlaskView):
                  raise Exception("Monitor field is not an object!")              
            else:
               monitor = {} 
+              
+           if "Scheduler" in in_data:
+              scheduler = in_data["Scheduler"]
+           else:
+              scheduler = ""
            
            ResourcesView().request_resources()
-           return json_reply(self._create_reservation(alloc_req, constraints, monitor))
+           return json_reply(self._create_reservation(scheduler, alloc_req, constraints, monitor))
         except Exception as e:           
            return json_error(e)               
     
