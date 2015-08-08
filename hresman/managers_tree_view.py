@@ -9,7 +9,7 @@ from managers_view import ManagersView
 import sqlite3
 
 ############ initialise database for managers ######
-conn = sqlite3.connect('crs.db')
+conn = sqlite3.connect('manager.db')
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS managers
              (key text unique, uuid text)''')
@@ -25,6 +25,10 @@ class ManagersTreeView(ManagersView):
        return name + ':' + addr + ':' + str(port)
    
     ###############################################  register manager ##############
+    
+    def _acceptManager(self, addr, port, name):
+       return True
+       
     def _registerManager(self, data):
         pass
    
@@ -33,7 +37,6 @@ class ManagersTreeView(ManagersView):
     def register_manager(self):
         try:
            in_data = json_request()
-           print ":::>", in_data
            
            if 'Address' in in_data:               
               addr = in_data['Address']
@@ -46,11 +49,14 @@ class ManagersTreeView(ManagersView):
               
            port = in_data['Port']
            name = in_data['Name']
-                      
+           
+           if not self._acceptManager(addr, port, name):
+              raise Exception("Manager %s rejected!" % name)
+                         
            key = ManagersTreeView.gen_key(name, addr, port)           
            
            ################### check the database ####
-           conn = sqlite3.connect('crs.db')
+           conn = sqlite3.connect('manager.db')
            c = conn.cursor()
            c.execute("SELECT * from managers where key = '%s'" % key)
            r = c.fetchone()
@@ -69,6 +75,7 @@ class ManagersTreeView(ManagersView):
            
            self._registerManager(data)
            
+           print ":::>", data
            return json_reply(ManagersTreeView.managers[idx])    
                
         except Exception as e:           
@@ -110,13 +117,17 @@ class ManagersTreeView(ManagersView):
         except Exception as e:           
            return json_error(e)      
             
-   ###############################################  delete manager X ##############     
+   ###############################################  delete manager X ##############   
+    def _deleteManager(self, id):
+        pass
+        
     @route(ManagersView.version + '/' + ManagersView.base + '/<id>', methods=["DELETE"]) 
     def delete_manager(self, id):
         try:
            if id in  ManagersTreeView.managers:
               item = ManagersTreeView.managers[id]
               key = ManagersTreeView.gen_key(item['Name'], item['Address'], item['Port'])
+              _deleteManager(id)
               ManagersTreeView.managers.pop(id)
               return json_reply({}) 
            
