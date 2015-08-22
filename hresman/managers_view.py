@@ -51,4 +51,4 @@ class ManagersView(FlaskView):
         except Exception as e:
            return json_error(e)       
 
-  
+ManagersView._class = ManagersView 

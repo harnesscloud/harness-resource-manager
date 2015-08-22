@@ -105,4 +105,6 @@ class ReservationsView(FlaskView):
            return json_reply(self._release_all_reservations())
         except Exception as e:           
            return json_error(e)             
-                            
+
+
+ReservationsView._class = ReservationsView                            

@@ -53,6 +53,7 @@ class MetricsView(FlaskView):
                
        except Exception as e:           
           return json_error(e)
-
+          
+MetricsView._class = MetricsView
           
                             

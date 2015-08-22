@@ -7,6 +7,8 @@ import json
 import uuid
 from managers_view import ManagersView
 import sqlite3
+import copy
+import sys
 
 ############ initialise database for managers ######
 conn = sqlite3.connect('manager.db')
@@ -72,10 +74,8 @@ class ManagersTreeView(ManagersView):
            data = { 'Address': addr, 'Port': port, 'Name': name, 'ManagerID': idx }   
                 
            ManagersTreeView.managers[idx] = data
-           
+           print "Adding manager: %s" % data['Name']
            self._registerManager(data)
-           
-           print ":::>", data
            return json_reply(ManagersTreeView.managers[idx])    
                
         except Exception as e:           
@@ -118,22 +118,22 @@ class ManagersTreeView(ManagersView):
            return json_error(e)      
             
    ###############################################  delete manager X ##############   
-    def _deleteManager(self, id):
+    def _deleteManager(self, name, address, port, id):
         pass
-        
+    
+    @route('/unregisterManager/<id>', methods=["DELETE"])    
     @route(ManagersView.version + '/' + ManagersView.base + '/<id>', methods=["DELETE"]) 
     def delete_manager(self, id):
         try:
+           print "Unregistering %s" % id
            if id in  ManagersTreeView.managers:
               item = ManagersTreeView.managers[id]
               key = ManagersTreeView.gen_key(item['Name'], item['Address'], item['Port'])
-              _deleteManager(id)
+              self._deleteManager(item['Name'], item['Address'], item['Port'], id)
               ManagersTreeView.managers.pop(id)
-              return json_reply({}) 
-           
-           raise Exception("invalid manager index: " + id)
-               
+              return json_reply({})          
+ 
         except Exception as e:           
            return json_error(e)       
       
-  
+ManagersTreeView._class = ManagersTreeView   

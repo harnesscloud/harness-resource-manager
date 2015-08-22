@@ -6,14 +6,14 @@ from utils import json_request, json_reply, json_error, get
 from managers_tree_view import ManagersTreeView
 import copy
 import json
+import threading
 
 class ResourcesView(FlaskView):
     base = 'resources'
     version='v3'    
     route_base='/'
     
-    resources = {}
-    
+    resources = {}    
     resource_constraints = {}
         
     ###############################################  get all resources ############## 
@@ -25,7 +25,7 @@ class ResourcesView(FlaskView):
     def get_resources(self):
         try:
            return json_reply(self._get_resources())   
-        except Exception as e:           
+        except Exception as e:          
            return json_error(e) 
 
     ################################  get allocation specification ##############  
@@ -59,18 +59,15 @@ class ResourcesView(FlaskView):
               if not isinstance(allocation,list):
                  raise Exception("Allocation field is not an array!")
            else:
-              allocation = None
+              allocation = {}
            
            if "Release" in in_data:
               release = in_data["Release"]
               if not isinstance(release, list):
                  raise Exception("Release field is not an array!")              
            else:
-              release = None 
-           
-           if allocation is None and release is None:
-              raise Exception("missing Allocation or Release fields!")
-           
+              release = {} 
+                      
            return json_reply(self._calculate_capacity(resource, allocation, release))
                         
         except Exception as e:           
@@ -84,17 +81,17 @@ class ResourcesView(FlaskView):
              raise Exception("cannot find manager: " + id)
           data = ManagersTreeView.managers[id]
 
-          try:   
+          try:  
              out = get("getResources", data["Port"], data["Address"])
              if "result" in out:
                  ResourcesView.resources[data["ManagerID"]] = out["result"]["Resources"]
                  if "Constraints" in out["result"]:
                     ResourcesView.resource_constraints[data["ManagerID"]] = out["result"]["Constraints"]
           except Exception as e:
-             ManagersTreeView().delete_manager(data["ManagerID"])
+             ManagersTreeView._class().delete_manager(data["ManagerID"])
              return json_error(e)
           return json_reply({})
-       except Exception as e:          
+       except Exception as e:
           return json_error(e)
 
     ################################ request resources from all IRMs ############
@@ -107,4 +104,5 @@ class ResourcesView(FlaskView):
           return json_reply({})
        except Exception as e:
           return json_error(e)
-                  
+          
+ResourcesView._class = ResourcesView               
