@@ -74,6 +74,7 @@ class ResourcesView(FlaskView):
            return json_error(e)   
 
     ################################ request resources from a resource manager ##############
+    ### This needs to leave!
     @route(version + '/' + base + '/<id>/request', methods=["GET"])
     def request_resources_id(self, id):
        try:

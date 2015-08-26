@@ -29,8 +29,10 @@ class MetricsView(FlaskView):
              entry = 0
           else:
              entry = in_data['Entry']
+             
+          ret = self._get_metrics(reservID, addr, entry) 
             
-          return json_reply(self._get_metrics(reservID, addr, entry)) 
+          return json_reply(ret) 
                             
        except Exception as e:           
           return json_error(e)
