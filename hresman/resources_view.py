@@ -84,9 +84,7 @@ class ResourcesView(FlaskView):
           data = ManagersTreeView.managers[id]
 
           try:  
-             print "Trying out getting resources!"
              out = get("getResources", data["Port"], data["Address"])
-             print "Done!"
 
              if "result" in out:
                  ResourcesView.resources[data["ManagerID"]] = out["result"]["Resources"]
