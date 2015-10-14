@@ -26,7 +26,7 @@ class MetricsView(FlaskView):
           else:       
              addr = in_data['Address']
           if 'Entry' not in in_data:
-             entry = 0
+             entry = 1
           else:
              entry = in_data['Entry']
              
