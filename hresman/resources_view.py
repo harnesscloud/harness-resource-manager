@@ -4,6 +4,7 @@ from flask.ext.classy import FlaskView, route
 from flask import request
 from utils import json_request, json_reply, json_error, get
 from managers_tree_view import ManagersTreeView
+import requests
 import copy
 import json
 import threading
@@ -83,13 +84,19 @@ class ResourcesView(FlaskView):
           data = ManagersTreeView.managers[id]
 
           try:  
+             print "Trying out getting resources!"
              out = get("getResources", data["Port"], data["Address"])
+             print "Done!"
+
              if "result" in out:
                  ResourcesView.resources[data["ManagerID"]] = out["result"]["Resources"]
                  if "Constraints" in out["result"]:
-                    ResourcesView.resource_constraints[data["ManagerID"]] = out["result"]["Constraints"]
-          except Exception as e:
+                    ResourcesView.resource_constraints[data["ManagerID"]] = out["result"]["Constraints"]   
+          except requests.exceptions.ConnectionError:
              ManagersTreeView._class().delete_manager(data["ManagerID"])
+             return json_error(Exception)   
+                                  
+          except Exception as e:
              return json_error(e)
           return json_reply({})
        except Exception as e:
